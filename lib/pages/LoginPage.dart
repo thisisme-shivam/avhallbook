@@ -164,8 +164,8 @@ class LoginPageState extends State<LoginPage> {
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.only(
-                      left: 60,
-                      right: 60,
+                      left: 50,
+                      right: 50,
                       top: 10,
                       bottom: 10,
                     ),

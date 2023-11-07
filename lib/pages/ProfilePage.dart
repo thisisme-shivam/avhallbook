@@ -1,7 +1,40 @@
+import 'package:av_hall_book/contant/Constants.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ProfilePage extends StatelessWidget {
+import '../controller/UserController.dart';
+import '../model/User.dart';
+
+class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
+
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  String name = '';
+  String phoneNumber = ''
+      '';
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch user data when the page is initialized
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    try {
+      final User? user = await Constants.getUserLocally();
+      setState(() {
+        name = user!.firstname + " " + user.lastname;
+        phoneNumber = user.phone;
+      });
+    } catch (e) {
+      // Handle errors or show a message if data fetch fails
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +67,8 @@ class ProfilePage extends StatelessWidget {
                   // height: 60.0, // Set the height of the container
 
                   color: Colors.grey[300], // Background color
-                  child: const Text(
-                    'Aditya Singh Raj-put',
+                  child:  Text(
+                    name,
                     style: TextStyle(
                       color: Colors.black, // Text color
                       fontSize: 20.0, // Text size
@@ -48,8 +81,8 @@ class ProfilePage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(16.0),
                   color: Colors.grey[300], // Background color
-                  child: const Text(
-                    '9302082626',
+                  child:  Text(
+                    phoneNumber,
                     style: TextStyle(
                       color: Colors.black, // Text color
                       fontSize: 20.0, // Text size

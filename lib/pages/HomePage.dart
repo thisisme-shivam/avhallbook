@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
   static const List<Widget> _widgetOptions = <Widget>[
     AVHallPage(),
-    Reportpage(),
+    ReportPage(),
     ProfilePage(),
 
 

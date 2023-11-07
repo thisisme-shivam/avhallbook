@@ -1,4 +1,9 @@
+
 import 'package:flutter/material.dart';
+
+import '../controller/AVHallController.dart';
+import '../controller/UserController.dart';
+import '../model/AVHall.dart';
 
 class AVHallPage extends StatefulWidget {
   const AVHallPage({Key? key}) : super(key: key);
@@ -8,50 +13,76 @@ class AVHallPage extends StatefulWidget {
 }
 
 class _AVHallPageState extends State<AVHallPage> {
-  final List<String> avHallNames = ['ME AV HALL', 'CSE AV HALL', 'AIDS AV HALL'];
+  List<AVHall> avHalls = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAVHalls(); // Fetch initial data when the widget is created.
+  }
+
+  Future<void> fetchAVHalls() async {
+    try {
+      final serverAVHalls = await AVHallController.fetchAVHalls();
+      setState(() {
+        avHalls = serverAVHalls;
+      });
+    } catch (e) {
+      // Handle the error
+      print('Error: $e');
+    }
+  }
+
+  Future<void> refreshAVHalls() async {
+    try {
+      final serverAVHalls = await AVHallController.fetchAVHalls(); // Always load the first page when refreshing.
+      setState(() {
+        avHalls = serverAVHalls;
+      });
+    } catch (e) {
+      // Handle the error
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListView(
-          children: avHallNames.map((title) {
-            return buildClickableCard(context, title);
-          }).toList(),
+      body: RefreshIndicator(
+        onRefresh: refreshAVHalls,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListView.builder(
+            itemCount: avHalls.length,
+            itemBuilder: (context, index) {
+              return buildClickableCard(context, avHalls[index]);
+            },
+          ),
         ),
       ),
+
     );
   }
 
-  Widget buildClickableCard(BuildContext context, String title) {
+  Widget buildClickableCard(BuildContext context, AVHall hall) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, '/bookhall');
-        // Handle the click event here
-        // You can navigate to another screen or perform any other action
-        print('Clicked on $title');
+        Navigator.pushNamed(context, '/bookhall', arguments: hall);
+        print('Clicked on ${hall.name}');
       },
       child: SizedBox(
         height: 100,
         width: 350,
         child: Card(
           elevation: 6,
-
-          child: Column(
-            children: [
-              Container(
-                child: Center(
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 17,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
+          child: Center(
+            child: Text(
+              hall.name,
+              style: const TextStyle(
+                fontSize: 17,
+                color: Colors.black,
               ),
-            ],
+            ),
           ),
         ),
       ),

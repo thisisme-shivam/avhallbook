@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../controller/UserController.dart';
+import '../model/User.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -151,15 +154,17 @@ class LoginPageState extends State<LoginPage> {
                   height: 10,
                 ),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      // The form is valid, continue with login logic
-                      // final email = _emailController.text; // Get email
-                      // final password = _passwordController.text; // Get password
-                      // print(_emailController);
-                      // print(_passwordController);
-                      // print("email:${_emailController.text}");
-                      Navigator.pushNamed(context, '/home');
+                      final email = _emailController.text; // Get email
+                      final password = _passwordController.text;
+                      try {
+                        final User user = await UserController.login(
+                            email, password);
+                        Navigator.pushNamed(context, '/home');
+                      } catch (e) {
+                        print('Authentication failed: $e');
+                      }
                     }
                   },
                   style: ElevatedButton.styleFrom(
